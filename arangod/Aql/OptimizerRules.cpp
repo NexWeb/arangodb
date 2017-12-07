@@ -4597,6 +4597,10 @@ void arangodb::aql::optimizeClusterLimitsToShardsRule(Optimizer* opt,
           LOG_DEVEL << "register new node";
           plan->registerNode(insertLimitNode);
           LOG_DEVEL << "insert new limit";
+          auto scatter = current->getFirstDependency();
+          if (scatter->getType() == ExecutionNode::SCATTER){
+            current = scatter;
+          }
           current = insertAbove(current, insertLimitNode); // advance
           LOG_DEVEL << "inserted new limit";
         }
